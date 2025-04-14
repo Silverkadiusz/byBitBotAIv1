@@ -17,7 +17,25 @@ Ogólny przepływ danych:
 
 8. Wynik zlecenie jest przechowywany jako orderResult
 
-
+                                                                         
+ : ╔════════════════════════════════════════════════════════════════════════════╗
+║                       ANALIZA TECHNICZNA KRYPTOWALUTY                      ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ Symbol: ETHUSDC                                                            ║
+║ Czas:   2025-04-14 21:15:27                                                ║
+║                                                                            ║
+║ CENA:   1 644,04 USDT                                               ║
+║                                                                            ║
+║ WSKAŹNIKI TECHNICZNE:                                                      ║
+║ SMA20/50/200: 1645,80/1635,40/1626,47                           ║
+║ RSI(14): 55,48                                                         ║
+║ MACD: -2,2254 / 0,1852                                               ║
+║ Bollinger: 1635,16 / 1645,80 / 1656,44                                ║
+║ Stochastic: K:21,28 D:17,14                                          ║
+║ Wolumen: 118,86 (1,00x śr.)                                           ║
+║                                                                            ║
+║ DECYZJA AI: WAIT                                                         ║
+╚════════════════════════════════════════════════════════════════════════════╝
 ApiConfig.java
 
 Cel:
