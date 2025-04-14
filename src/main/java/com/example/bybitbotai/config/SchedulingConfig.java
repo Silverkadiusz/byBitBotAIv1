@@ -25,7 +25,7 @@ public class SchedulingConfig {
    // @Scheduled(fixedDelayString = "${trading.interval.minutes:15}000")
 
    // @Scheduled(fixedDelayString = "${trading.interval.minutes:1}000")
-   @Scheduled(fixedRate = 10000)
+   @Scheduled(fixedRateString = "${trading.interval.milliseconds:150000}")
    public void scheduleTradingCycle() {
         log.info("Uruchamianie zaplanowanego cyklu handlowego, interwał: {} sec",
                 tradingConfig.getIntervalSec());

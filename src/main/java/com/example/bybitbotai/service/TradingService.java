@@ -4,7 +4,7 @@ import com.example.bybitbotai.config.ApiConfig.TradingConfig;
 import com.example.bybitbotai.model.OrderResult;
 import com.example.bybitbotai.model.TechnicalIndicators;
 import com.example.bybitbotai.model.TradingDecision;
-
+import com.example.bybitbotai.util.SoundUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -131,6 +131,8 @@ public class TradingService {
             }
             logBuilder.append("║                                                                            ║\n");
 
+
+
             TradingDecision decision;
             if (indicators != null) {
                 decision = claudeService.getTradingDecision(
@@ -139,10 +141,26 @@ public class TradingService {
                 decision = claudeService.getTradingDecision(
                         tradingConfig.getSymbol(), tradingConfig.getCategory(), currentPrice);
             }
-
             lastDecision.set(decision);
+
+            String ansiColor;
+            String resetColor = "\u001B[0m";
+
+            if (decision.getAction() == TradingDecision.Action.BUY) {
+                ansiColor = "\u001B[32m";
+                SoundUtils.playSound("success");
+            } else if (decision.getAction() == TradingDecision.Action.SELL) {
+                ansiColor = "\u001B[31m";
+                SoundUtils.playSound("alert");
+            } else {
+                ansiColor = "\u001B[33m";
+                SoundUtils.playSound("notification");
+            }
+
+            String decisionWithColor = ansiColor + decision.getAction().toString() + resetColor;
+
             logBuilder.append("║ DECYZJA AI: ")
-                    .append(padRight(decision.getAction().toString(), 61))
+                    .append(padRight(decisionWithColor, 61))
                     .append("║\n");
             logBuilder.append("╚════════════════════════════════════════════════════════════════════════════╝");
 
@@ -186,6 +204,9 @@ public class TradingService {
             return null;
         }
     }
+
+
+
 
     /**
      * Sprawdza, czy należy wykonać zlecenie na podstawie historii zleceń
