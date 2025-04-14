@@ -1,0 +1,108 @@
+Ogólny przepływ danych:
+
+1.SchedulingConfig uruchamia cyklicznie meodę executeTradingCycle() z TradingService
+
+2.TradingsService pobiera cenę za pomocą ByBitService
+
+3. TradingService prosi ClaudeService o decyzję
+
+4. ClaudeService komunikuje się z API Claude i zwraca tradingDecision
+
+5.TradingService sprawdza czy należy wykonać zlecenie
+(shouldExecuteOrder())
+
+6. Jeśli tak, TradingService używa ByBitService do wykonania zlecenia
+
+7. ByBitService tworzy żądanie do API ByBit, podpisujac je za pomoca ApiSignatureUtil
+
+8. Wynik zlecenie jest przechowywany jako orderResult
+
+
+ApiConfig.java
+
+Cel:
+    Centralizuje wszystkie ustawienia konfiguracyjne dla API i tradingu
+Działanie:
+    Definiuje zagnieżdżone klasy konfiguracyjne z adnotacją @ConfigurationProperties
+    ByBitApiConfig: przechowuje url, key, i secret do API byBit
+    ClaudeApiConfig: przechowuje url, key, wersje i model dla Api Claude
+    TradingConfig: przechowuje parametry handlowe(symbol, kategoria, typ zlecenia
+    ilosc, interwały
+    Udostępnia RestTemplate do komunikacji HTTP
+
+SchedulinConfig.java
+Cel:
+    Konfiguruje automatycznie wykonywanie cykli tradingowych
+
+Działanie Adnotacja @EnableSchedulin włącza mechanizm harmonogramowania w spring
+scheduleTradingCycle() uruchamia cykl tradingowy w regularnych odstępach czasu
+
+tradig.interval.minutes odczytuje onterwal z konfiguracji
+
+Klasy modeli
+
+TradingDecision.java
+
+Enum Action, isActionable() sprawdza czy decyzja wymaga podjęcia dzialania buy/sell
+
+OrderResult.java
+
+Cel Reprezentuje wynik wykonania zlecenia na giełdzie
+Działanie:
+    Przechowuje detale zlecenie
+    Flaga success
+
+
+
+KLASY DTO
+
+ByBitRderRequest.java
+Reprezentuje JSON, wymaganą przez API ByBit
+
+ByBitTickerResponse.java
+
+Mapuje odpowiedź Api bybit na zapytanie o cenę
+
+
+ClaudeReqiest.java
+Reprezentuije żądanie do API Claude
+
+Zawiera model, maksymalną liczbe tokenów i wiadomość
+
+metoda createSimpleRequest towrzy zapytanie
+
+ClaudeResponse.java
+
+Odzwierciedla strukturę odpowiedzi JSON z Claude
+
+metoda getFirstResponsePart() wydobywa treść odpowiedzi
+
+Usługi:
+ByBitService.java
+Cel: Komunikacja Api z giełdą ByBit
+
+Działanie: getCurrentPrice(): Pobiera aktualną cene krptowaluty z Api ByBit
+
+executeOrder wykonuje zlecenie buy/sell
+
+TradingServide.java
+Cel: Główny serwis koordynujacy proces tradingowy
+
+Działanie: executeTradingCycle()
+    Realizuje pełny cykl tradingowy:
+    1.Pobiera ceny
+    2.Uzyskiwanie decyzji Claude
+    3.Wykonanie trasakcji jeśli potrzebna
+
+    shouldExecuteOrder() implenetacja logiki zabezpieczającą przed zbyt częstymi trasnakcjami
+    Przechowuje ostatnia decyzje i zelcenie
+    loguje kazdy krok poocesu
+
+
+ApiSignatureUtil
+
+Cel: Generowanie podpisów dla uwierzytelnania API ByBit
+
+Działanie generateTimeStamp() Tworzy timestamp dla api
+generateSignature() generuje podpis HMAC-SHA256 dla parametrów zapytania
+sortParams(): Sortuje parametry (wymagane przez API Bybit)
