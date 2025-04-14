@@ -55,15 +55,25 @@ public class ClaudeService {
                 return getTradingDecisionPriceOnly(symbol, currentPrice);
             }
 
-            String systemPrompt = "Jesteś doświadczonym traderem kryptowalut specjalizującym się w analizie technicznej. " +
-                    "Analizujesz wskaźniki techniczne, aby podejmować decyzje handlowe dla kryptowalut. " +
-                    "Odpowiadaj tylko jednym słowem: 'Buy' (kup), 'Sell' (sprzedaj), lub 'Wait' (czekaj). " +
-                    "Analizuj wskaźniki techniczne i podejmij najlepszą decyzję inwestycyjną. Nie dodawaj wyjaśnień.";
+            String systemPrompt = "Jesteś traderem kryptowalut specjalizującym się w aktywnym day tradingu i scalp tradingu. " +
+                    "Odpowiadaj wyłącznie słowami: 'Buy', 'Sell', lub 'Wait'. " +
+                    "Twoim celem jest znajdowanie i wykorzystywanie nawet najmniejszych okazji rynkowych: " +
+                    "- Reaguj na wyprzedanie (RSI < 40, Stochastic < 30) rekomendacją Buy " +
+                    "- Reaguj na wykupienie (RSI > 60, Stochastic > 70) rekomendacją Sell " +
+                    "- Zwracaj uwagę na przecięcia średnich kroczących i linie MACD " +
+                    "- Preferuj aktywne działanie nad czekanie " +
+                    "- Bierz pod uwagę każdy możliwy sygnał techniczny " +
+                    "Odpowiadaj tylko jednym słowem.";
 
-            String userPrompt = "Na podstawie poniższych wskaźników technicznych dla " + symbol +
-                    ", zdecyduj czy powinienem kupić, sprzedać czy czekać. Odpowiedz tylko jednym słowem (Buy/Sell/Wait).\n\n" +
+            String userPrompt = "Bazując na poniższych wskaźnikach technicznych dla " + symbol +
+                    ", zdecyduj czy należy kupić, sprzedać czy czekać. " +
+                    "Wskaźniki mogą zawierać sygnały, które normalnie byłyby zbyt słabe, " +
+                    "ale dla agresywnego tradera są wartościową okazją rynkową. " +
+                    "Nawet jeśli sygnały są mieszane, wybierz akcję, która ma największe prawdopodobieństwo zysku. " +
+                    "Odpowiedz tylko: Buy, Sell lub Wait.\n\n" +
                     indicators.getIndicatorsDescription() + "\n" +
-                    indicators.getSignalsSummary();
+                    indicators.getSignalsSummary() +
+                    "\nCzekanie (Wait) wybieraj tylko w ostateczności, gdy absolutnie nie ma żadnych sygnałów.";
 
             ClaudeRequest request = ClaudeRequest.createSimpleRequest(
                     claudeConfig.getModel(), systemPrompt, userPrompt, 100);
@@ -132,14 +142,17 @@ public class ClaudeService {
         try {
             log.info("Pytanie Claude o decyzję tradingową tylko na podstawie ceny dla {} ({})", symbol, currentPrice);
 
-            // Przygotowanie zapytania dla Claude
-            String systemPrompt = "Jesteś asystentem tradingowym kryptowalut. " +
+            String systemPrompt = "Jesteś agresywnym traderem kryptowalut, zawsze poszukującym okazji rynkowych. " +
                     "Odpowiadaj tylko jednym słowem: 'Buy' (kup), 'Sell' (sprzedaj), lub 'Wait' (czekaj). " +
-                    "Analizuj obecną cenę i podejmij najlepszą decyzję inwestycyjną. Nie dodawaj wyjaśnień.";
+                    "Preferujesz aktywny handel nad czekanie. Każdy mały sygnał to dla Ciebie potencjalna okazja. " +
+                    "Buy gdy widzisz potencjał wzrostu. Sell gdy widzisz potencjał spadku. " +
+                    "Wait tylko gdy absolutnie nie ma żadnych wskazówek. Nie dawaj wyjaśnień.";
+
 
             String userPrompt = "Aktualna cena " + symbol + " to " + currentPrice + " USDT. " +
-                    "Na podstawie bieżących warunków rynkowych i ceny, czy powinienem kupić, sprzedać czy czekać? " +
-                    "Odpowiedz tylko jednym słowem.";
+                    "Rynek kryptowalut jest pełen okazji, nawet małe zmiany mogą przynieść zyski. " +
+                    "Na podstawie tej ceny i Twojego doświadczenia, czy powinienem kupić, sprzedać czy czekać? " +
+                    "Wskaż tylko: Buy, Sell lub Wait.";
 
             ClaudeRequest request = ClaudeRequest.createSimpleRequest(
                     claudeConfig.getModel(), systemPrompt, userPrompt, 100);
