@@ -17,55 +17,25 @@ Ogólny przepływ danych:
 
 8. Wynik zlecenie jest przechowywany jako orderResult
 
-                                                                                                   : ╔════════════════════════════════════════════════════════════════════════════╗
-2025-04-14 21:04:04.695  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                       ANALIZA TECHNICZNA KRYPTOWALUTY                      ║
-2025-04-14 21:04:04.695  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ╠════════════════════════════════════════════════════════════════════════════╣
-2025-04-14 21:04:04.731 DEBUG 20936 --- [   scheduling-1] c.e.bybitbotai.service.BybitService      : Pobieranie ceny dla ETHUSDC, URL: https://api.bybit.com/v5/market/tickers?category=spot&symbol=ETHUSDC
-2025-04-14 21:04:05.542  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.BybitService      : Aktualna cena ETHUSDC: 1641.87 USDC
-2025-04-14 21:04:05.546  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Symbol: ETHUSDC                                                            ║
-2025-04-14 21:04:05.547  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Czas:   2025-04-14 21:04:05                                                ║
-2025-04-14 21:04:05.547  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                                                                            ║
-2025-04-14 21:04:05.548  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ CENA:   1 641,87                                                    ║ USDT
-2025-04-14 21:04:05.548  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                                                                            ║
-2025-04-14 21:04:05.549 DEBUG 20936 --- [   scheduling-1] c.e.b.s.TechnicalIndicatorsService       : Pobieranie danych historycznych dla ETHUSDC, URL: https://api.bybit.com/v5/market/kline?category=spot&symbol=ETHUSDC&interval=15&limit=200
-2025-04-14 21:04:05.778  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ WSKAŹNIKI TECHNICZNE:                                                      ║
-2025-04-14 21:04:05.779  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ SMA20/50/200: 1645,20/1635,97/1626,42                           ║
-2025-04-14 21:04:05.779  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ RSI(14): 56,28                                                         ║
-2025-04-14 21:04:05.780  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ MACD: -3,2305 / -0,6400                                              ║
-2025-04-14 21:04:05.780  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Bollinger: 1634,09 / 1645,20 / 1656,30                                ║
-2025-04-14 21:04:05.781  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Stochastic: K:27,40 D:17,93                                          ║
-2025-04-14 21:04:05.781  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Wolumen: 136,02 (1,14x śr.)                                           ║
-2025-04-14 21:04:05.781  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                                                                            ║
-2025-04-14 21:04:05.781  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.ClaudeService     : Pytanie Claude o decyzję tradingową dla ETHUSDC przy cenie 1641.87
-2025-04-14 21:04:06.745  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.ClaudeService     : Claude sugeruje: wait
-2025-04-14 21:04:06.746  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ DECYZJA AI: WAIT                                                         ║
-2025-04-14 21:04:06.746  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ╚════════════════════════════════════════════════════════════════════════════╝
-2025-04-14 21:04:14.674  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.config.SchedulingConfig   : Uruchamianie zaplanowanego cyklu handlowego, interwał: 0 sec
-2025-04-14 21:04:14.675  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ╔════════════════════════════════════════════════════════════════════════════╗
-2025-04-14 21:04:14.675  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                       ANALIZA TECHNICZNA KRYPTOWALUTY                      ║
-2025-04-14 21:04:14.675  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ╠════════════════════════════════════════════════════════════════════════════╣
-2025-04-14 21:04:14.675 DEBUG 20936 --- [   scheduling-1] c.e.bybitbotai.service.BybitService      : Pobieranie ceny dla ETHUSDC, URL: https://api.bybit.com/v5/market/tickers?category=spot&symbol=ETHUSDC
-2025-04-14 21:04:14.928  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.BybitService      : Aktualna cena ETHUSDC: 1642.11 USDC
-2025-04-14 21:04:14.929  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Symbol: ETHUSDC                                                            ║
-2025-04-14 21:04:14.929  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Czas:   2025-04-14 21:04:14                                                ║
-2025-04-14 21:04:14.929  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                                                                            ║
-2025-04-14 21:04:14.929  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ CENA:   1 642,11                                                    ║ USDT
-2025-04-14 21:04:14.929  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Zmiana: +0,24 (+0,01%)                                             ↑║ {}
-2025-04-14 21:04:14.929  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                                                                            ║
-2025-04-14 21:04:14.930  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ WSKAŹNIKI TECHNICZNE:                                                      ║
-2025-04-14 21:04:14.930  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ SMA20/50/200: 1645,20/1635,97/1626,42                           ║
-2025-04-14 21:04:14.931  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ RSI(14): 56,28                                                         ║
-2025-04-14 21:04:14.931  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ MACD: -3,2305 / -0,6400                                              ║
-2025-04-14 21:04:14.931  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Bollinger: 1634,09 / 1645,20 / 1656,30                                ║
-2025-04-14 21:04:14.932  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Stochastic: K:27,40 D:17,93                                          ║
-2025-04-14 21:04:14.932  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ Wolumen: 136,02 (1,14x śr.)                                           ║
-2025-04-14 21:04:14.933  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║                                                                            ║
-2025-04-14 21:04:14.933  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.ClaudeService     : Pytanie Claude o decyzję tradingową dla ETHUSDC przy cenie 1642.11
-2025-04-14 21:04:15.796  INFO 20936 --- [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-04-14 21:04:15.869  INFO 20936 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-04-14 21:04:16.650  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.ClaudeService     : Claude sugeruje: wait
-2025-04-14 21:04:16.651  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ║ DECYZJA AI: WAIT                                                         ║
-2025-04-14 21:04:16.651  INFO 20936 --- [   scheduling-1] c.e.bybitbotai.service.TradingService    : ╚════════════════════════════════════════════════════════════════════════════╝
+                                                                         
+ : ╔════════════════════════════════════════════════════════════════════════════╗
+║                       ANALIZA TECHNICZNA KRYPTOWALUTY                      ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║ Symbol: ETHUSDC                                                            ║
+║ Czas:   2025-04-14 21:15:27                                                ║
+║                                                                            ║
+║ CENA:   1 644,04 USDT                                               ║
+║                                                                            ║
+║ WSKAŹNIKI TECHNICZNE:                                                      ║
+║ SMA20/50/200: 1645,80/1635,40/1626,47                           ║
+║ RSI(14): 55,48                                                         ║
+║ MACD: -2,2254 / 0,1852                                               ║
+║ Bollinger: 1635,16 / 1645,80 / 1656,44                                ║
+║ Stochastic: K:21,28 D:17,14                                          ║
+║ Wolumen: 118,86 (1,00x śr.)                                           ║
+║                                                                            ║
+║ DECYZJA AI: WAIT                                                         ║
+╚════════════════════════════════════════════════════════════════════════════╝
 ApiConfig.java
 
 Cel:
