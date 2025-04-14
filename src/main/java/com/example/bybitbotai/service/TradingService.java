@@ -48,26 +48,22 @@ public class TradingService {
      */
     public OrderResult executeTradingCycle() {
         try {
-            // Ramka początkowa z tytułem
-            log.info("╔════════════════════════════════════════════════════════════════════════════╗");
-            log.info("║                       ANALIZA TECHNICZNA KRYPTOWALUTY                      ║");
-            log.info("╠════════════════════════════════════════════════════════════════════════════╣");
-
-            // Krok 1: Pobierz aktualną cenę kryptowaluty
             double currentPrice = bybitService.getCurrentPrice(
                     tradingConfig.getSymbol(), tradingConfig.getCategory());
 
-            // Formatowanie danych
             String formattedPrice = formatPrice(currentPrice);
             String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-            // Wyświetlenie podstawowych danych w ramce
-            log.info("║ Symbol: {}", padRight(tradingConfig.getSymbol(), 67) + "║");
-            log.info("║ Czas:   {}", padRight(timeStamp, 67) + "║");
-            log.info("║                                                                            ║");
-            log.info("║ CENA:   {} USDT", padRight(formattedPrice, 60) + "║");
+            StringBuilder logBuilder = new StringBuilder();
+            logBuilder.append("╔════════════════════════════════════════════════════════════════════════════╗\n");
+            logBuilder.append("║                       ANALIZA TECHNICZNA KRYPTOWALUTY                      ║\n");
+            logBuilder.append("╠════════════════════════════════════════════════════════════════════════════╣\n");
 
-            // Dodanie informacji o zmianie ceny, jeśli mamy poprzednią cenę
+            logBuilder.append("║ Symbol: ").append(padRight(tradingConfig.getSymbol(), 67)).append("║\n");
+            logBuilder.append("║ Czas:   ").append(padRight(timeStamp, 67)).append("║\n");
+            logBuilder.append("║                                                                            ║\n");
+            logBuilder.append("║ CENA:   ").append(padRight(formattedPrice + " USDT", 60)).append("║\n");
+
             TradingDecision lastDec = lastDecision.get();
             if (lastDec != null && lastDec.getCurrentPrice() > 0) {
                 double previousPrice = lastDec.getCurrentPrice();
@@ -77,54 +73,64 @@ public class TradingService {
                 String changeStr = String.format("%+.2f (%+.2f%%)", priceDiff, percentChange);
                 String changeIndicator = priceDiff > 0 ? "↑" : (priceDiff < 0 ? "↓" : "→");
 
-                log.info("║ Zmiana: {} {}", padRight(changeStr, 59) + changeIndicator + "║");
+                logBuilder.append("║ Zmiana: ").append(padRight(changeStr, 59)).append(changeIndicator).append("║\n");
             }
-            log.info("║                                                                            ║");
+            logBuilder.append("║                                                                            ║\n");
 
-            // Krok 2: Pobierz wskaźniki techniczne
             TechnicalIndicators indicators = technicalIndicatorsService.calculateAllIndicators(
                     tradingConfig.getSymbol(), tradingConfig.getCategory(), 200);
 
             if (indicators != null) {
-                // Wyświetl kluczowe wskaźniki
-                log.info("║ WSKAŹNIKI TECHNICZNE:                                                      ║");
-                log.info("║ SMA20/50/200: {}/{}/{}",
-                        padRight(String.format("%.2f", indicators.getSma20()), 7),
-                        padRight(String.format("%.2f", indicators.getSma50()), 7),
-                        padRight(String.format("%.2f", indicators.getSma200()), 34) + "║");
+                logBuilder.append("║ WSKAŹNIKI TECHNICZNE:                                                      ║\n");
+                logBuilder.append("║ SMA20/50/200: ")
+                        .append(padRight(String.format("%.2f", indicators.getSma20()), 7))
+                        .append("/")
+                        .append(padRight(String.format("%.2f", indicators.getSma50()), 7))
+                        .append("/")
+                        .append(padRight(String.format("%.2f", indicators.getSma200()), 34))
+                        .append("║\n");
 
-                log.info("║ RSI(14): {}", padRight(String.format("%.2f %s",
-                        indicators.getRsi(),
-                        indicators.isRsiOverbought() ? "[WYKUPIENIE]" :
-                                (indicators.isRsiOversold() ? "[WYPRZEDANIE]" : "")), 62) + "║");
+                logBuilder.append("║ RSI(14): ")
+                        .append(padRight(String.format("%.2f %s",
+                                indicators.getRsi(),
+                                indicators.isRsiOverbought() ? "[WYKUPIENIE]" :
+                                        (indicators.isRsiOversold() ? "[WYPRZEDANIE]" : "")), 62))
+                        .append("║\n");
 
-                log.info("║ MACD: {}", padRight(String.format("%.4f / %.4f %s",
-                        indicators.getMacdLine(),
-                        indicators.getSignalLine(),
-                        indicators.isMacdCrossover() ? "[SYGNAŁ KUPNA]" :
-                                (indicators.isMacdCrossunder() ? "[SYGNAŁ SPRZEDAŻY]" : "")), 63) + "║");
+                logBuilder.append("║ MACD: ")
+                        .append(padRight(String.format("%.4f / %.4f %s",
+                                indicators.getMacdLine(),
+                                indicators.getSignalLine(),
+                                indicators.isMacdCrossover() ? "[SYGNAŁ KUPNA]" :
+                                        (indicators.isMacdCrossunder() ? "[SYGNAŁ SPRZEDAŻY]" : "")), 63))
+                        .append("║\n");
 
-                log.info("║ Bollinger: {}", padRight(String.format("%.2f / %.2f / %.2f",
-                        indicators.getBollingerLower(),
-                        indicators.getBollingerMiddle(),
-                        indicators.getBollingerUpper()), 59) + "║");
+                logBuilder.append("║ Bollinger: ")
+                        .append(padRight(String.format("%.2f / %.2f / %.2f",
+                                indicators.getBollingerLower(),
+                                indicators.getBollingerMiddle(),
+                                indicators.getBollingerUpper()), 59))
+                        .append("║\n");
 
-                log.info("║ Stochastic: {}", padRight(String.format("K:%.2f D:%.2f %s",
-                        indicators.getStochasticK(),
-                        indicators.getStochasticD(),
-                        indicators.isStochasticOverbought() ? "[WYKUPIENIE]" :
-                                (indicators.isStochasticOversold() ? "[WYPRZEDANIE]" : "")), 57) + "║");
+                logBuilder.append("║ Stochastic: ")
+                        .append(padRight(String.format("K:%.2f D:%.2f %s",
+                                indicators.getStochasticK(),
+                                indicators.getStochasticD(),
+                                indicators.isStochasticOverbought() ? "[WYKUPIENIE]" :
+                                        (indicators.isStochasticOversold() ? "[WYPRZEDANIE]" : "")), 57))
+                        .append("║\n");
 
-                log.info("║ Wolumen: {}", padRight(String.format("%.2f (%.2fx śr.) %s",
-                        indicators.getVolume(),
-                        indicators.getVolumeRatio(),
-                        indicators.isHighVolume() ? "[WYSOKI]" : ""), 61) + "║");
+                logBuilder.append("║ Wolumen: ")
+                        .append(padRight(String.format("%.2f (%.2fx śr.) %s",
+                                indicators.getVolume(),
+                                indicators.getVolumeRatio(),
+                                indicators.isHighVolume() ? "[WYSOKI]" : ""), 61))
+                        .append("║\n");
             } else {
-                log.info("║ Nie udało się obliczyć wskaźników technicznych                           ║");
+                logBuilder.append("║ Nie udało się obliczyć wskaźników technicznych                           ║\n");
             }
-            log.info("║                                                                            ║");
+            logBuilder.append("║                                                                            ║\n");
 
-            // Krok 3: Zapytaj Claude o decyzję tradingową
             TradingDecision decision;
             if (indicators != null) {
                 decision = claudeService.getTradingDecision(
@@ -135,12 +141,14 @@ public class TradingService {
             }
 
             lastDecision.set(decision);
-            log.info("║ DECYZJA AI: {}", padRight(decision.getAction().toString(), 61) + "║");
-            log.info("╚════════════════════════════════════════════════════════════════════════════╝");
+            logBuilder.append("║ DECYZJA AI: ")
+                    .append(padRight(decision.getAction().toString(), 61))
+                    .append("║\n");
+            logBuilder.append("╚════════════════════════════════════════════════════════════════════════════╝");
 
-            // Krok 4: Wykonaj transakcję na podstawie decyzji
-           /* if (decision.isActionable()) {
-                // Sprawdź, czy nie wykonujemy zbyt częstych transakcji tego samego typu
+            log.info(logBuilder.toString());
+
+            /*if (decision.isActionable()) {
                 if (shouldExecuteOrder(decision)) {
                     log.info("Wykonywanie transakcji: {}", decision.getAction());
 
@@ -164,15 +172,17 @@ public class TradingService {
                 log.info("Brak transakcji, decyzja: {}", decision.getAction());
             }
 
-            */
+             */
 
             return null;
         } catch (Exception e) {
-            log.error("╔════════════════════════════════════════════════════════════════════════════╗");
-            log.error("║                                    BŁĄD                                    ║");
-            log.error("╠════════════════════════════════════════════════════════════════════════════╣");
-            log.error("║ {}", padRight(e.getMessage(), 76) + "║");
-            log.error("╚════════════════════════════════════════════════════════════════════════════╝");
+            StringBuilder errorBuilder = new StringBuilder();
+            errorBuilder.append("╔════════════════════════════════════════════════════════════════════════════╗\n");
+            errorBuilder.append("║                                    BŁĄD                                    ║\n");
+            errorBuilder.append("╠════════════════════════════════════════════════════════════════════════════╣\n");
+            errorBuilder.append("║ ").append(padRight(e.getMessage(), 76)).append("║\n");
+            errorBuilder.append("╚════════════════════════════════════════════════════════════════════════════╝");
+            log.error(errorBuilder.toString());
             return null;
         }
     }
@@ -187,27 +197,23 @@ public class TradingService {
     private boolean shouldExecuteOrder(TradingDecision decision) {
         OrderResult lastOrderResult = lastOrder.get();
 
-        // Jeśli nie było wcześniejszych zleceń, wykonaj to
         if (lastOrderResult == null) {
             return true;
         }
 
-        // Sprawdź, czy ostatnie zlecenie było tego samego typu
         boolean isSameActionAsLast =
                 (decision.getAction() == TradingDecision.Action.BUY && "Buy".equals(lastOrderResult.getSide())) ||
                         (decision.getAction() == TradingDecision.Action.SELL && "Sell".equals(lastOrderResult.getSide()));
 
-        // Jeśli to inny typ akcji, wykonaj
         if (!isSameActionAsLast) {
             return true;
         }
 
-        // Sprawdź, czy minęło wystarczająco dużo czasu od ostatniego zlecenia tego samego typu
-        // (np. minimum 1 godzina między zleceniami tego samego typu)
+        // Sprawdzenie, czy minęło wystarczająco dużo czasu od ostatniego zlecenia tego samego typu
+
         LocalDateTime lastOrderTime = lastOrderResult.getTimestamp();
         Duration timeSinceLastOrder = Duration.between(lastOrderTime, LocalDateTime.now());
 
-        // Minimalny czas między zleceniami tego samego typu (w minutach)
         long minTimeInMinutes = 60; // 1 godzina
 
         return timeSinceLastOrder.toMinutes() >= minTimeInMinutes;
@@ -231,14 +237,13 @@ public class TradingService {
      * Metoda pomocnicza do formatowania ceny z odpowiednią liczbą miejsc po przecinku
      */
     private String formatPrice(double price) {
-        // Dla BTC wystarczy 2 miejsca po przecinku, ale dla innych kryptowalut
-        // możemy chcieć wyświetlać więcej miejsc, np. dla tokenów o małej wartości
+
         if (price >= 1000) {
-            return String.format("%,.2f", price); // Format z separatorem tysięcy
+            return String.format("%,.2f", price);
         } else if (price >= 1) {
             return String.format("%.2f", price);
         } else {
-            return String.format("%.8f", price); // Więcej miejsc po przecinku dla małych wartości
+            return String.format("%.8f", price);
         }
     }
 

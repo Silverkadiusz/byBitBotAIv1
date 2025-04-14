@@ -47,7 +47,6 @@ public class ClaudeService {
         try {
             log.info("Pytanie Claude o decyzję tradingową dla {} przy cenie {}", symbol, currentPrice);
 
-            // Pobierz wskaźniki techniczne
             TechnicalIndicators indicators = technicalIndicatorsService.calculateAllIndicators(
                     symbol, category, 200);
 
@@ -56,7 +55,6 @@ public class ClaudeService {
                 return getTradingDecisionPriceOnly(symbol, currentPrice);
             }
 
-            // Przygotowanie zapytania dla Claude
             String systemPrompt = "Jesteś doświadczonym traderem kryptowalut specjalizującym się w analizie technicznej. " +
                     "Analizujesz wskaźniki techniczne, aby podejmować decyzje handlowe dla kryptowalut. " +
                     "Odpowiadaj tylko jednym słowem: 'Buy' (kup), 'Sell' (sprzedaj), lub 'Wait' (czekaj). " +
