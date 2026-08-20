@@ -124,3 +124,68 @@ Cel: Generowanie podpisów dla uwierzytelnania API ByBit
 Działanie generateTimeStamp() Tworzy timestamp dla api
 generateSignature() generuje podpis HMAC-SHA256 dla parametrów zapytania
 sortParams(): Sortuje parametry (wymagane przez API Bybit)
+
+private List<Transactions> GetAllHistoryFromApi(
+    string entity,
+    string productIds)
+{
+    const int pageSize = 25;
+
+    var allTransactions = new List<Transactions>();
+
+    var pageNumber = 1;
+    long pageCount = 1;
+    long totalOperationsCount = 0;
+
+    do
+    {
+        var historyUrl =
+            TestConfig.ApiGatewayUrl(entity) +
+            "api/pfm/ib/v1.0/Transactions/GetOperationsPfm" +
+            $"?productIds={productIds}" +
+            $"&pageNumber={pageNumber}" +
+            $"&pageSize={pageSize}";
+
+        var history = _apiCaller
+            .ApiCall<PfmHistoryListDto>(
+                HttpMethod.Get,
+                historyUrl)
+            .Result;
+
+        if (history == null)
+        {
+            throw new Exception(
+                $"History API returned null for page {pageNumber}.");
+        }
+
+        if (pageNumber == 1)
+        {
+            pageCount = history.PageCount;
+            totalOperationsCount = history.TotalOperationsCount;
+
+            if (totalOperationsCount == 0)
+            {
+                return allTransactions;
+            }
+        }
+
+        if (history.Transactions != null &&
+            history.Transactions.Any())
+        {
+            allTransactions.AddRange(history.Transactions);
+        }
+
+        pageNumber++;
+    }
+    while (pageNumber <= pageCount);
+
+    if (allTransactions.Count != totalOperationsCount)
+    {
+        throw new Exception(
+            $"History API returned incorrect number of transactions. " +
+            $"Expected: {totalOperationsCount}, " +
+            $"received: {allTransactions.Count}.");
+    }
+
+    return allTransactions;
+}-–
